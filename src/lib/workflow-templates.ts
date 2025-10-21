@@ -1,0 +1,353 @@
+import type { WorkflowProject } from "./ProjectStorage"
+
+export interface WorkflowTemplate {
+    id: string
+    name: string
+    description: string
+    icon: string
+    project: Omit<WorkflowProject, "id" | "createdAt" | "updatedAt">
+}
+
+export const workflowTemplates: WorkflowTemplate[] = [
+  {
+    id: "lead-scoring",
+    name: "Lead Scoring Workflow",
+    description: "Score and route leads based on quality metrics",
+    icon: "Rocket",
+    project: {
+      name: "Lead Scoring Workflow",
+      nodes: [
+        {
+          id: "1",
+          type: "start",
+          position: { x: 100, y: 100 },
+          data: {
+            label: "Start Workflow",
+            description: "Webhook trigger",
+            trigger: "webhook",
+          },
+        },
+        {
+          id: "2",
+          type: "action",
+          position: { x: 100, y: 280 },
+          data: {
+            label: "Fetch Lead Data",
+            description: "Enrich account information",
+            actionType: "enrichment",
+            endpoint: "/api/enrich",
+            collapsed: false,
+          },
+        },
+        {
+          id: "3",
+          type: "decision",
+          position: { x: 450, y: 220 },
+          data: {
+            label: "Check Lead Score",
+            description: "Evaluate lead quality",
+            condition: "score > 80",
+            trueLabel: "Hot Lead",
+            falseLabel: "Warm Lead",
+            collapsed: false,
+          },
+        },
+        {
+          id: "4",
+          type: "action",
+          position: { x: 800, y: 120 },
+          data: {
+            label: "AI Personalization",
+            description: "Generate personalized content",
+            actionType: "ai",
+            collapsed: false,
+          },
+        },
+        {
+          id: "5",
+          type: "terminal",
+          position: { x: 1100, y: 120 },
+          data: {
+            label: "Premium Outreach",
+            description: "Send immediate email",
+            output: "email",
+          },
+        },
+        {
+          id: "6",
+          type: "action",
+          position: { x: 800, y: 320 },
+          data: {
+            label: "Standard Queue",
+            description: "Add to nurture sequence",
+            actionType: "transform",
+            collapsed: false,
+          },
+        },
+        {
+          id: "7",
+          type: "terminal",
+          position: { x: 1100, y: 320 },
+          data: {
+            label: "Standard Outreach",
+            description: "Schedule follow-up",
+            output: "email",
+          },
+        },
+      ],
+      edges: [
+        {
+          id: "e1-2",
+          source: "1",
+          target: "2",
+          animated: true,
+          style: { stroke: "#0ea5e9", strokeWidth: 2 },
+          markerEnd: { type: "arrowclosed", color: "#0ea5e9" },
+        },
+        {
+          id: "e2-3",
+          source: "2",
+          target: "3",
+          animated: true,
+          style: { stroke: "#0ea5e9", strokeWidth: 2 },
+          markerEnd: { type: "arrowclosed", color: "#0ea5e9" },
+        },
+        {
+          id: "e3-4",
+          source: "3",
+          target: "4",
+          sourceHandle: "true",
+          label: "Hot Lead",
+          animated: true,
+          style: { stroke: "#10b981", strokeWidth: 2 },
+          labelStyle: { fill: "#10b981", fontWeight: 600, fontSize: 12 },
+          labelBgStyle: { fill: "#d1fae5", fillOpacity: 0.9 },
+          markerEnd: { type: "arrowclosed", color: "#10b981" },
+        },
+        {
+          id: "e4-5",
+          source: "4",
+          target: "5",
+          animated: true,
+          style: { stroke: "#0ea5e9", strokeWidth: 2 },
+          markerEnd: { type: "arrowclosed", color: "#0ea5e9" },
+        },
+        {
+          id: "e3-6",
+          source: "3",
+          target: "6",
+          sourceHandle: "false",
+          label: "Warm Lead",
+          animated: true,
+          style: { stroke: "#ef4444", strokeWidth: 2 },
+          labelStyle: { fill: "#ef4444", fontWeight: 600, fontSize: 12 },
+          labelBgStyle: { fill: "#fee2e2", fillOpacity: 0.9 },
+          markerEnd: { type: "arrowclosed", color: "#ef4444" },
+        },
+        {
+          id: "e6-7",
+          source: "6",
+          target: "7",
+          animated: true,
+          style: { stroke: "#0ea5e9", strokeWidth: 2 },
+          markerEnd: { type: "arrowclosed", color: "#0ea5e9" },
+        },
+      ],
+    },
+  },
+  {
+    id: "approval-flow",
+    name: "Simple Approval Process",
+    description: "Basic request and approval workflow",
+    icon: "CheckCircle2",
+    project: {
+      name: "Simple Approval Process",
+      nodes: [
+        {
+          id: "1",
+          type: "start",
+          position: { x: 250, y: 50 },
+          data: {
+            label: "Request Submitted",
+            description: "User submits request",
+            trigger: "webhook",
+          },
+        },
+        {
+          id: "2",
+          type: "decision",
+          position: { x: 250, y: 200 },
+          data: {
+            label: "Approved?",
+            description: "Review request",
+            condition: "amount < 1000",
+            trueLabel: "Yes",
+            falseLabel: "No",
+            collapsed: false,
+          },
+        },
+        {
+          id: "3",
+          type: "terminal",
+          position: { x: 50, y: 350 },
+          data: {
+            label: "Approved",
+            description: "Process request",
+            output: "email",
+          },
+        },
+        {
+          id: "4",
+          type: "terminal",
+          position: { x: 450, y: 350 },
+          data: {
+            label: "Rejected",
+            description: "Notify rejection",
+            output: "email",
+          },
+        },
+      ],
+      edges: [
+        {
+          id: "e1-2",
+          source: "1",
+          target: "2",
+          animated: true,
+          style: { stroke: "#0ea5e9", strokeWidth: 2 },
+          markerEnd: { type: "arrowclosed", color: "#0ea5e9" },
+        },
+        {
+          id: "e2-3",
+          source: "2",
+          target: "3",
+          sourceHandle: "true",
+          label: "Yes",
+          animated: true,
+          style: { stroke: "#10b981", strokeWidth: 2 },
+          labelStyle: { fill: "#10b981", fontWeight: 600, fontSize: 12 },
+          labelBgStyle: { fill: "#d1fae5", fillOpacity: 0.9 },
+          markerEnd: { type: "arrowclosed", color: "#10b981" },
+        },
+        {
+          id: "e2-4",
+          source: "2",
+          target: "4",
+          sourceHandle: "false",
+          label: "No",
+          animated: true,
+          style: { stroke: "#ef4444", strokeWidth: 2 },
+          labelStyle: { fill: "#ef4444", fontWeight: 600, fontSize: 12 },
+          labelBgStyle: { fill: "#fee2e2", fillOpacity: 0.9 },
+          markerEnd: { type: "arrowclosed", color: "#ef4444" },
+        },
+      ],
+    },
+  },
+  {
+    id: "email-notification",
+    name: "Email Notification Flow",
+    description: "Send notifications based on conditions",
+    icon: "Database",
+    project: {
+      name: "Email Notification Flow",
+      nodes: [
+        {
+          id: "1",
+          type: "start",
+          position: { x: 200, y: 50 },
+          data: {
+            label: "Event Triggered",
+            description: "User action detected",
+            trigger: "event",
+          },
+        },
+        {
+          id: "2",
+          type: "action",
+          position: { x: 200, y: 180 },
+          data: {
+            label: "Prepare Email",
+            description: "Build email content",
+            actionType: "transform",
+            collapsed: false,
+          },
+        },
+        {
+          id: "3",
+          type: "decision",
+          position: { x: 200, y: 320 },
+          data: {
+            label: "Send Email?",
+            description: "Check conditions",
+            condition: "user.email_verified",
+            trueLabel: "Send",
+            falseLabel: "Skip",
+            collapsed: false,
+          },
+        },
+        {
+          id: "4",
+          type: "terminal",
+          position: { x: 50, y: 450 },
+          data: {
+            label: "Email Sent",
+            description: "Notification delivered",
+            output: "email",
+          },
+        },
+        {
+          id: "5",
+          type: "terminal",
+          position: { x: 350, y: 450 },
+          data: {
+            label: "Skipped",
+            description: "Email not sent",
+            output: "webhook",
+          },
+        },
+      ],
+      edges: [
+        {
+          id: "e1-2",
+          source: "1",
+          target: "2",
+          animated: true,
+          style: { stroke: "#0ea5e9", strokeWidth: 2 },
+          markerEnd: { type: "arrowclosed", color: "#0ea5e9" },
+        },
+        {
+          id: "e2-3",
+          source: "2",
+          target: "3",
+          animated: true,
+          style: { stroke: "#0ea5e9", strokeWidth: 2 },
+          markerEnd: { type: "arrowclosed", color: "#0ea5e9" },
+        },
+        {
+          id: "e3-4",
+          source: "3",
+          target: "4",
+          sourceHandle: "true",
+          label: "Send",
+          animated: true,
+          style: { stroke: "#10b981", strokeWidth: 2 },
+          labelStyle: { fill: "#10b981", fontWeight: 600, fontSize: 12 },
+          labelBgStyle: { fill: "#d1fae5", fillOpacity: 0.9 },
+          markerEnd: { type: "arrowclosed", color: "#10b981" },
+        },
+        {
+          id: "e3-5",
+          source: "3",
+          target: "5",
+          sourceHandle: "false",
+          label: "Skip",
+          animated: true,
+          style: { stroke: "#ef4444", strokeWidth: 2 },
+          labelStyle: { fill: "#ef4444", fontWeight: 600, fontSize: 12 },
+          labelBgStyle: { fill: "#fee2e2", fillOpacity: 0.9 },
+          markerEnd: { type: "arrowclosed", color: "#ef4444" },
+        },
+      ],
+    },
+  },
+]
